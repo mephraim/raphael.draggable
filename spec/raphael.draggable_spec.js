@@ -76,6 +76,7 @@ Screw.Unit(function() {
       overrideEventHandler('mousedown');
       overrideEventHandler('mousemove');
       overrideEventHandler('mouseup');
+      overrideEventHandler('mouseout');
       
       paper = Raphael(0, 0, 600, 600).draggable.enable();
       rect  = paper.rect(1,1,1,1).draggable.enable();
@@ -125,9 +126,14 @@ Screw.Unit(function() {
           rect.mousedown([{}]);
           expect(paper.draggable.current()).to(equal, rect);
         });
+        
+        it("sets the isDragging property of the element to true", function() {
+          rect.mousedown([{}]);
+          expect(rect.draggable.isDragging).to(equal, true);
+        });
       });
       
-      describe("mousemove", function() {        
+      describe("mousemove", function() {
         it("translates the object by the amount that the mouse moved", function() {
           var translateX, translateY;
           Raphael.el.translate = function(x, y) {
@@ -152,7 +158,27 @@ Screw.Unit(function() {
           rect.mouseup();
           expect(paper.draggable.current()).to(equal, null);
         });
+        
+        it("sets the isDragging property to false", function() {
+          rect.mousedown([{}]);
+          rect.mouseup();
+          expect(rect.draggable.isDragging).to(equal, false);
+        });
       })
+      
+      describe("mouseout", function() {
+        it("resets the current draggable", function() {
+          rect.mousedown([{}]);
+          rect.mouseout();
+          expect(paper.draggable.current()).to(equal, null);
+        });
+        
+        it("sets the isDragging property to false", function() {
+          rect.mousedown([{}]);
+          rect.mouseout();
+          expect(rect.draggable.isDragging).to(equal, false);
+        });
+      });
     });
   });
 });
