@@ -70,10 +70,37 @@ Screw.Unit(function() {
   });
   
   describe("Draggable plugin for Raphael elements", function() {
+    var paper;
     var rect;
     before(function() {
-      rect = Raphael(0, 0, 600, 600).draggable.enable().rect(1,1,1,1);
-      rect.draggable.enable();
+      // Override Raphael's mousedown so that mousedown can be triggered
+      Raphael.el.mousedown = function(arg) {
+        if (typeof arg == 'function') {
+          this.mousedownHandlers = this.mousedownHandlers || [];
+          this.mousedownHandlers.push(arg);
+        }
+        else {
+          for(var i = 0; i < this.mousedownHandlers.length; i++) {
+            this.mousedownHandlers[i].apply(this, arg);
+          }
+        }
+      };
+      
+      // Override Raphael's mousemove so that mousemove can be triggered
+      Raphael.el.mousemove = function(arg) {
+        if (typeof arg == 'function') {
+          this.mouseMoveHandlers = this.mouseMoveHandlers || [];
+          this.mouseMoveHandlers.push(arg);
+        }
+        else {
+          for(var i = 0; i < this.mouseMoveHandlers.length; i++) {
+            this.mouseMoveHandlers[i].apply(this, arg);
+          }
+        }
+      };
+      
+      paper = Raphael(0, 0, 600, 600).draggable.enable();
+      rect  = paper.rect(1,1,1,1).draggable.enable();
     });
     
     it("adds a draggable namespace to raphael elements", function() {
@@ -111,6 +138,34 @@ Screw.Unit(function() {
       
       it("returns the element after being called", function() {
         expect(rect.draggable.disable()).to(equal, rect);
+      });
+    });
+  
+    describe("event handlers", function() {
+      describe("mousedown", function() {
+        it("sets the draggable.current() for the paper to the element", function() {
+          rect.mousedown([{}]);
+          expect(paper.draggable.current()).to(equal, rect);
+        });
+      });
+      
+      describe("mousemove", function() {        
+        it("translates the object by the amount that the mouse moved", function() {
+          var translateX, translateY;
+          Raphael.el.translate = function(x, y) {
+            translateX = x;
+            translateY = y;
+          };
+          
+          var startX = startY = 0;
+          var moveX = moveY = 15;
+          
+          rect.mousedown([{ clientX: startX, clientY: startY}]);
+          rect.mousemove([{clientX: moveX, clientY: moveY}]);
+          
+          expect(translateX).to(equal, moveX - startX);
+          expect(translateY).to(equal, moveY - startY);
+        });
       });
     });
   });
