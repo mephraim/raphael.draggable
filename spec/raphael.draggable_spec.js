@@ -73,31 +73,9 @@ Screw.Unit(function() {
     var paper;
     var rect;
     before(function() {
-      // Override Raphael's mousedown so that mousedown can be triggered
-      Raphael.el.mousedown = function(arg) {
-        if (typeof arg == 'function') {
-          this.mousedownHandlers = this.mousedownHandlers || [];
-          this.mousedownHandlers.push(arg);
-        }
-        else {
-          for(var i = 0; i < this.mousedownHandlers.length; i++) {
-            this.mousedownHandlers[i].apply(this, arg);
-          }
-        }
-      };
-      
-      // Override Raphael's mousemove so that mousemove can be triggered
-      Raphael.el.mousemove = function(arg) {
-        if (typeof arg == 'function') {
-          this.mouseMoveHandlers = this.mouseMoveHandlers || [];
-          this.mouseMoveHandlers.push(arg);
-        }
-        else {
-          for(var i = 0; i < this.mouseMoveHandlers.length; i++) {
-            this.mouseMoveHandlers[i].apply(this, arg);
-          }
-        }
-      };
+      overrideEventHandler('mousedown');
+      overrideEventHandler('mousemove');
+      overrideEventHandler('mouseup');
       
       paper = Raphael(0, 0, 600, 600).draggable.enable();
       rect  = paper.rect(1,1,1,1).draggable.enable();
@@ -167,6 +145,14 @@ Screw.Unit(function() {
           expect(translateY).to(equal, moveY - startY);
         });
       });
+    
+      describe('mouseup', function() {
+        it("resets the current draggable", function() {
+          rect.mousedown([{}]);
+          rect.mouseup();
+          expect(paper.draggable.current()).to(equal, null);
+        });
+      })
     });
   });
 });
