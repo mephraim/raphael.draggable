@@ -89,26 +89,20 @@ Screw.Unit(function() {
     it("adds a draggable.enable function to raphael elements", function() {
       expect(jQuery.isFunction(rect.draggable.enable)).to(equal, true);
     });
-    
-    describe("The draggable.enable function for elements", function() {
+        
+    describe("the draggable.enable function for elements", function() {
       it("returns the element after being called", function() {
         expect(rect.draggable.enable()).to(equal, rect);
       });
-    });
-    
-    describe("the draggable.enable function", function() {
-      it("sets draggable.enabled to true when is called", function() {
+      
+      it("sets draggable.enabled to true when it's called", function() {
         rect.draggable.enabled = false;
         rect.draggable.enable();
         expect(rect.draggable.enabled).to(equal, true);
       });
-      
-      it("returns the element after being called", function() {
-        expect(rect.draggable.enable()).to(equal, rect);
-      });
     });
 
-    describe("the draggable.disable function", function() {
+    describe("the draggable.disable function for elements", function() {
       it("sets draggable.enabled to false when called", function() {
         rect.draggable.enabled = true;
         rect.draggable.disable();
@@ -178,6 +172,137 @@ Screw.Unit(function() {
           rect.mouseout();
           expect(rect.draggable.isDragging).to(equal, false);
         });
+      });
+    });
+  });
+  
+  describe("Draggable plugin for Raphael sets", function() {
+    var paper;
+    var set;
+    before(function() {
+      paper = Raphael(0, 0, 600, 600);
+      
+      overrideEventHandlerForSet(paper, 'mousedown');
+      overrideEventHandlerForSet(paper, 'mousemove');
+      overrideEventHandlerForSet(paper, 'mouseup');
+      overrideEventHandlerForSet(paper, 'mouseout');
+      
+      paper.draggable.enable();
+      set = paper.set();
+      set.draggable.enable();
+    });
+    
+    it("adds a draggable namespace to raphael sets", function() {
+      expect(set.draggable).to_not(equal, null);
+    });
+    
+    it("adds a draggable.enable function to raphael set", function() {
+      expect(jQuery.isFunction(set.draggable.enable)).to(equal, true);
+    });
+  
+    describe("The draggable.enable function for sets", function() {
+      it("returns the set after being called", function() {
+        expect(set.draggable.enable()).to(equal, set);
+      });
+      
+      it("sets draggable.enabled to true when it's called", function() {
+        set.draggable.enabled = false;
+        set.draggable.enable();
+        expect(set.draggable.enabled).to(equal, true);
+      });
+    });
+    
+    describe("the draggable.disable function for set", function() {
+      it("sets draggable.enabled to false when called", function() {
+        set.draggable.enabled = true;
+        set.draggable.disable();
+        expect(set.draggable.enabled).to(equal, false);
+      });
+      
+      it("returns the set after being called", function() {
+        expect(set.draggable.disable()).to(equal, set);
+      });
+    });
+  
+    describe("event handlers", function() {
+      describe("mousedown", function() {
+        it("sets the draggable.current() for the paper to the element", function() {
+          set.mousedown([{}]);
+          expect(paper.draggable.current()).to(equal, set);
+        });
+        
+        it("sets the isDragging property of the element to true", function() {
+          set.mousedown([{}]);
+          expect(set.draggable.isDragging).to(equal, true);
+        });
+      });
+      
+      describe("mousemove", function() {
+        it("translates the object by the amount that the mouse moved", function() {
+          var translateX, translateY;
+          set.translate = function(x, y) {
+            translateX = x;
+            translateY = y;
+          };
+          
+         var startX = startY = 0;
+         var moveX = moveY = 15;
+          
+         set.mousedown([{ clientX: startX, clientY: startY}]);
+         set.mousemove([{clientX: moveX, clientY: moveY}]);
+          
+         expect(translateX).to(equal, moveX - startX);
+         expect(translateY).to(equal, moveY - startY);
+        });
+      });
+    
+      describe('mouseup', function() {
+        it("resets the current draggable", function() {
+          set.mousedown([{}]);
+          set.mouseup();
+          expect(paper.draggable.current()).to(equal, null);
+        });
+        
+        it("sets the isDragging property to false", function() {
+          set.mousedown([{}]);
+          set.mouseup();
+          expect(set.draggable.isDragging).to(equal, false);
+        });
+      })
+         
+      describe("mouseout", function() {
+        it("resets the current draggable", function() {
+          set.mousedown([{}]);
+          set.mouseout();
+          expect(paper.draggable.current()).to(equal, null);
+        });
+       
+        it("sets the isDragging property to false", function() {
+          set.mousedown([{}]);
+          set.mouseout();
+          expect(set.draggable.isDragging).to(equal, false);
+        });
+      });
+    });
+  
+    describe("set.push function", function() {
+      it("adds a draggable.parent property to the element that stores the parent set", function() {
+        var rect = paper.rect(1,1,1,1).draggable.enable();
+        set.push(rect);
+        expect(rect.draggable.parent).to(equal, set);
+      });
+      
+      it("enables dragability for the element", function() {
+        var rect = paper.rect(1,1,1,1);
+        set.push(rect);
+        expect(rect.draggable.enabled).to(equal, true);
+      });
+      
+      it("doesn't enable dragability for the element if the set's draggability isn't enabled", function() {
+        var rect = paper.rect(1,1,1,1);
+        set.draggable.disable();
+        set.push(rect);
+        expect(rect.draggable.enabled).to(equal, false);
       });
     });
   });
