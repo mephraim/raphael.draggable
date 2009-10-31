@@ -1,17 +1,34 @@
 window.onload = function() {
-  var canvas = Raphael(0,0, 500, 500);
-  canvas.draggable.enable();
+  paper = Raphael(0,0, 800, 600);
+  paper.draggable.enable();
   
-  canvas.rect(0, 0, 100, 100).
-         attr({ 'fill': 'white' }).
-         draggable.enable();
-         
-  var rect = canvas.rect(100, 100, 100, 100).
-             attr({ 'fill': 'white' });
+  attrs = { 'fill': 'white' };
+  
+  singleRect();
+  ellipse();
+  set();
+}
+
+function singleRect() {
+  paper.rect(0, 0, 100, 100).
+        attr(attrs).
+        draggable.enable();
+}
+
+function ellipse() {
+  paper.ellipse(150, 150, 50, 100).
+        attr(attrs).
+        draggable.enable();
+}
+
+function set() {
+  var rect = paper.rect(300, 300, 100, 100).
+             attr(attrs);
              
-  var circle = canvas.circle(150, 150, 60);
+  var circle = paper.circle(350, 350, 20).
+               attr(attrs);
              
-  var set = canvas.set();
+  var set = paper.set();
   set.draggable.enable();
   set.push(rect);
   set.push(circle);
