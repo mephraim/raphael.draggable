@@ -189,6 +189,23 @@ Screw.Unit(function() {
       it("returns the set after being called", function() {
         expect(set.draggable.disable()).to(equal, set);
       });
+      
+      it("moves the element instead of moving the set during dragging", function() {
+        var translated = false;
+        set.translate = function (x, y) {
+          translated = true;
+        };
+        
+        var rect = paper.rect(0,0,10,10);
+        set.push(rect);
+        
+        set.draggable.disable();
+        
+        rect.mousedown([{ clientX: 0, clientY: 0}]);
+        document.onmousemove({clientX: 1, clientY: 1});
+
+        expect(translated).to(equal, false);
+      });
     });
     
     describe("set.push function", function() {
