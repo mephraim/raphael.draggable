@@ -1,0 +1,6 @@
+[submodule "vendor/screw-unit"]
+	path = vendor/screw-unit
+	url = git://github.com/nkallen/screw-unit.git
+[submodule "vendor/raphael"]
+	path = vendor/raphael
+	url = git://github.com/DmitryBaranovskiy/raphael.git
