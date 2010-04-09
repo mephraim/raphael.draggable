@@ -110,6 +110,50 @@ Screw.Unit(function() {
         expect(rect.draggable.disable()).to(equal, rect);
       });
     });
+    
+    describe("the draggable.dragged function for elements", function () {
+      it("calls the event listener with the elements translation", function() {
+        var draggedX, draggedY;
+        rect.draggable.dragged(function (x, y)
+        {
+          draggedX = x;
+          draggedY = y;
+        });
+
+        var startX = startY = 0;
+        var moveX = moveY = 15;
+
+        rect.mousedown([{ clientX: startX, clientY: startY}]);
+        document.onmousemove({clientX: moveX, clientY: moveY});
+
+        expect(draggedX).to(equal, moveX - startX);
+        expect(draggedY).to(equal, moveY - startY);
+      });
+
+      it("correctly translates the element", function() {
+        var translateX, translateY;
+        Raphael.el.translate = function(x, y) {
+          translateX = x;
+          translateY = y;
+        };
+
+        var dragged;
+        rect.draggable.dragged(function (x, y) {
+          dragged = true;
+        });
+        
+        var startX = startY = 0;
+        var moveX = moveY = 15;
+        
+        rect.mousedown([{ clientX: startX, clientY: startY}]);
+        document.onmousemove({clientX: moveX, clientY: moveY});
+
+        expect(translateX).to(equal, moveX - startX);
+        expect(translateY).to(equal, moveY - startY);
+
+        expect(dragged).to(equal, true);
+      });
+    });
   
     describe("event handlers", function() {
       describe("mousedown", function() {
@@ -208,6 +252,55 @@ Screw.Unit(function() {
       });
     });
     
+    describe("the draggable.dragged function for sets", function () {
+      it("calls the event listener with the set's translation", function() {
+        var draggedX, draggedY;
+        set.draggable.dragged(function(x, y) {
+          draggedX = x;
+          draggedY = y;
+        });
+        
+        var startX = startY = 0;
+        var moveX = moveY   = 15;
+        
+        var rect = paper.rect(0,0,10,10);
+        set.push(rect);
+        
+        rect.mousedown([{ clientX: startX, clientY: startY}]);
+        document.onmousemove({clientX: moveX, clientY: moveY});
+
+        expect(draggedX).to(equal, moveX - startX);
+        expect(draggedY).to(equal, moveY - startY);
+       });
+
+      it("correctly translates the set", function() {
+        var translateX, translateY;
+        set.translate = function(x, y) {
+          translateX = x;
+          translateY = y;
+        };
+        
+        var dragged;
+        set.draggable.dragged(function (x, y) {
+          dragged = true;
+        });
+        
+        var startX = startY = 0;
+        var moveX = moveY   = 15;
+        
+        var rect = paper.rect(0,0,10,10);
+        set.push(rect);
+        
+        rect.mousedown([{ clientX: startX, clientY: startY}]);
+        document.onmousemove({clientX: moveX, clientY: moveY});
+
+        expect(translateX).to(equal, moveX - startX);
+        expect(translateY).to(equal, moveY - startY);
+
+        expect(dragged).to(equal, true);
+      });
+    });
+
     describe("set.push function", function() {
       it("adds a draggable.parent property to the element that stores the parent set", function() {
         var rect = paper.rect(1,1,1,1).draggable.enable();
