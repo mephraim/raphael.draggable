@@ -192,23 +192,34 @@ Screw.Unit(function() {
     });
     
     describe("set.push function", function() {
-      it("adds a draggable.parent property to the element that stores the parent set", function() {
+      it("adds a draggable.parent property to elements passed to the push function", function() {
         var rect = paper.rect(1,1,1,1).draggable.enable();
         set.push(rect);
         expect(rect.draggable.parent).to(equal, set);
       });
       
-      it("enables dragability for the element", function() {
-        var rect = paper.rect(1,1,1,1);
-        set.push(rect);
-        expect(rect.draggable.enabled).to(equal, true);
+      it("enables dragability for elements passed to the push function", function() {
+        var rect1 = paper.rect(1,1,1,1);
+        var rect2 = paper.rect(1,1,1,1);
+
+        set.push(rect1);
+        expect(rect1.draggable.enabled).to(equal, true);
+
+        set.push(rect2);
+        expect(rect2.draggable.enabled).to(equal, true)
       });
       
-      it("doesn't enable dragability for the element if the set's draggability isn't enabled", function() {
-        var rect = paper.rect(1,1,1,1);
+      it("doesn't enable dragability for the elements if the set's draggability isn't enabled", function() {
+        var rect1 = paper.rect(1,1,1,1);
+        var rect2 = paper.rect(1,1,1,1);
+
         set.draggable.disable();
-        set.push(rect);
-        expect(rect.draggable.enabled).to(equal, false);
+
+        set.push(rect1);
+        expect(rect1.draggable.enabled).to(equal, false);
+
+        set.push(rect2);
+        expect(rect2.draggable.enabled).to(equal, false);
       });
     });
   
