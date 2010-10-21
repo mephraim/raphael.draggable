@@ -10,9 +10,17 @@ window.onload = function() {
 };
 
 function singleRect() {
-  paper.rect(0, 0, 100, 100).
-        attr(attrs).
-        draggable.enable();
+  var rect = paper.rect(0, 0, 100, 100).
+                   attr(attrs).
+                   draggable.enable();
+
+  rect.draggable.dragstart(function() {
+    console.log("Dragging started!");
+  });
+
+  rect.draggable.dragend(function() {
+    console.log("Dragging ended!");
+  });
 }
 
 function ellipse() {
@@ -26,7 +34,7 @@ function set() {
              attr(attrs);
 
   rect.draggable.drag(function() {
-    console.log("rect dragged");
+    console.log("Rect dragged!");
   });
 
   var circle = paper.circle(350, 350, 20).
@@ -34,7 +42,7 @@ function set() {
 
   var set = paper.set();
   set.draggable.drag(function() {
-    console.log("set dragged");
+    console.log("Set dragged!");
   });
 
   set.draggable.enable();

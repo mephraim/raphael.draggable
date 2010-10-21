@@ -85,8 +85,16 @@ Screw.Unit(function() {
       expect(jQuery.isFunction(rect.draggable.enable)).to(equal, true);
     });
 
+    it ("adds a draggable.dragstart function to raphael elements", function() {
+      expect(jQuery.isFunction(rect.draggable.dragstart)).to(equal, true);
+    });
+
     it ("adds a draggable.drag function to raphael elements", function() {
       expect(jQuery.isFunction(rect.draggable.drag)).to(equal, true);
+    });
+
+    it ("adds a draggable.dragend function to raphael elements", function() {
+      expect(jQuery.isFunction(rect.draggable.dragend)).to(equal, true);
     });
 
     describe("the draggable.enable function for elements", function() {
@@ -145,6 +153,22 @@ Screw.Unit(function() {
     });
 
     describe("Draggable event handlers", function() {
+      describe("draggable.dragstart", function() {
+        it("returns the element after being called", function() {
+          expect(rect.draggable.dragstart()).to(equal, rect);
+        });
+
+        it ("attaches listener functions that will be called when the element starts dragging", function() {
+          var called = false;
+          rect.draggable.dragstart(function() {
+            called = true;
+          });
+
+          clickAndMoveElement(rect.node);
+          expect(called).to(equal, true);
+        });
+      });
+
       describe("draggable.drag", function() {
         it("returns the element after being called", function() {
           expect(rect.draggable.drag()).to(equal, rect);
@@ -158,6 +182,22 @@ Screw.Unit(function() {
 
           clickAndMoveElement(rect.node);
 
+          expect(called).to(equal, true);
+        });
+      });
+
+      describe("draggable.dragstart", function() {
+        it("returns the element after being called", function() {
+          expect(rect.draggable.dragend()).to(equal, rect);
+        });
+
+        it ("attaches listener functions that will be called when the element stops dragging", function() {
+          var called = false;
+          rect.draggable.dragend(function() {
+            called = true;
+          });
+
+          clickAndMoveElement(rect.node);
           expect(called).to(equal, true);
         });
       });
