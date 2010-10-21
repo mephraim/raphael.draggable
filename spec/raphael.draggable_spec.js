@@ -55,9 +55,11 @@ Screw.Unit(function() {
       });
 
       it("stores the current draggable", function() {
-        var element = "test";
+        var element = paper.rect(1,1,1,1).draggable.enable();
         paper.draggable.current(element);
         expect(paper.draggable.current()).to(equal, element);
+
+        paper.draggable.clearCurrent();
       });
     });
 
