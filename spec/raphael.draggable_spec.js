@@ -118,6 +118,7 @@ Screw.Unit(function() {
         it("sets the draggable.current() for the paper to the element", function() {
           triggerMouseEvent(rect.node, "mousedown");
           expect(paper.draggable.current()).to(equal, rect);
+          triggerMouseEvent(document, "mouseup");
         });
       });
 
@@ -128,10 +129,7 @@ Screw.Unit(function() {
             translateCalled = true;
           }
 
-          triggerMouseEvent(rect.node, "mousedown");
-          triggerMouseEvent(document, "mousemove");
-          triggerMouseEvent(document, "mouseup");
-
+          clickAndMoveElement(rect.node);
           expect(translateCalled).to(equal, true);
         });
       });
@@ -158,9 +156,7 @@ Screw.Unit(function() {
             called = true;
           });
 
-          triggerMouseEvent(rect.node, "mousedown");
-          triggerMouseEvent(document, "mousemove");
-          triggerMouseEvent(document, "mouseup");
+          clickAndMoveElement(rect.node);
 
           expect(called).to(equal, true);
         });
@@ -285,9 +281,7 @@ Screw.Unit(function() {
           var rect = paper.rect(0,0,10,10);
           set.push(rect);
 
-          triggerMouseEvent(rect.node, "mousedown");
-          triggerMouseEvent(document, "mousemove");
-          triggerMouseEvent(document, "mouseup");
+          clickAndMoveElement(rect.node);
 
           expect(called).to(equal, true);
         });
