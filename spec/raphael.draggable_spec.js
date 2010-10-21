@@ -87,6 +87,10 @@ Screw.Unit(function() {
       expect(jQuery.isFunction(rect.draggable.enable)).to(equal, true);
     });
 
+    it ("adds a draggable.drag function to raphael elements", function() {
+      expect(jQuery.isFunction(rect.draggable.drag)).to(equal, true);
+    });
+
     describe("the draggable.enable function for elements", function() {
       it("returns the element after being called", function() {
         expect(rect.draggable.enable()).to(equal, rect);
@@ -111,7 +115,7 @@ Screw.Unit(function() {
       });
     });
 
-    describe("event handlers", function() {
+    describe("DOM event handlers", function() {
       describe("mousedown", function() {
         it("sets the draggable.current() for the paper to the element", function() {
           rect.mousedown([{}]);
@@ -146,6 +150,26 @@ Screw.Unit(function() {
         });
       })
     });
+
+    describe("Draggable event handlers", function() {
+      describe("draggable.drag", function() {
+        it("returns the element after being called", function() {
+          expect(rect.draggable.drag()).to(equal, rect);
+        });
+
+        it ("attaches listener functions that will be called when the element drags", function() {
+          var called = false;
+          rect.draggable.drag(function() {
+            called = true;
+          });
+
+          rect.mousedown([{}]);
+          document.onmousemove({});
+
+          expect(called).to(equal, true);
+        });
+      });
+    });
   });
 
   describe("Draggable plugin for Raphael sets", function() {
@@ -163,8 +187,12 @@ Screw.Unit(function() {
       expect(set.draggable).to_not(equal, null);
     });
 
-    it("adds a draggable.enable function to raphael set", function() {
+    it("adds a draggable.enable function to raphael sets", function() {
       expect(jQuery.isFunction(set.draggable.enable)).to(equal, true);
+    });
+
+    it ("adds a draggable.drag function to raphael sets", function() {
+      expect(jQuery.isFunction(set.draggable.drag)).to(equal, true);
     });
 
     describe("The draggable.enable function for sets", function() {
@@ -242,6 +270,29 @@ Screw.Unit(function() {
 
         expect(translateX).to(equal, moveX - startX);
         expect(translateY).to(equal, moveY - startY);
+      });
+    });
+
+    describe("Draggable event handlers", function() {
+      describe("draggable.drag", function() {
+        it("returns the element after being called", function() {
+          expect(set.draggable.drag()).to(equal, set);
+        });
+
+        it ("attaches listener functions that will be called when an element in the set drags", function() {
+          var called = false;
+          set.draggable.drag(function() {
+            called = true;
+          });
+
+          var rect = paper.rect(0,0,10,10);
+          set.push(rect);
+
+          rect.mousedown([{}]);
+          document.onmousemove({});
+
+          expect(called).to(equal, true);
+        });
       });
     });
   });

@@ -7,7 +7,7 @@ window.onload = function() {
   singleRect();
   ellipse();
   set();
-}
+};
 
 function singleRect() {
   paper.rect(0, 0, 100, 100).
@@ -24,12 +24,22 @@ function ellipse() {
 function set() {
   var rect = paper.rect(300, 300, 100, 100).
              attr(attrs);
-             
+
+  rect.draggable.drag(function() {
+    console.log("rect dragged");
+  });
+
   var circle = paper.circle(350, 350, 20).
                attr(attrs);
-             
+
   var set = paper.set();
+  set.draggable.drag(function() {
+    console.log("set dragged");
+  });
+
   set.draggable.enable();
   set.push(rect);
   set.push(circle);
+
+  var div = document.createElement("div");
 }
