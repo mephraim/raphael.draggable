@@ -73,8 +73,6 @@ Screw.Unit(function() {
     var paper;
     var rect;
     before(function() {
-      overrideEventHandler('mousedown');
-
       paper = Raphael(0, 0, 600, 600).draggable.enable();
       rect  = paper.rect(1,1,1,1).draggable.enable();
     });
@@ -118,34 +116,31 @@ Screw.Unit(function() {
     describe("DOM event handlers", function() {
       describe("mousedown", function() {
         it("sets the draggable.current() for the paper to the element", function() {
-          rect.mousedown([{}]);
+          triggerMouseEvent(rect.node, "mousedown");
           expect(paper.draggable.current()).to(equal, rect);
         });
       });
 
       describe("mousemove", function() {
-        it("translates the object by the amount that the mouse moved", function() {
-          var translateX, translateY;
-          Raphael.el.translate = function(x, y) {
-            translateX = x;
-            translateY = y;
-          };
+        it("translates the object when the mouse is moved", function() {
+          var translateCalled = false;
+          rect.translate = function(x, y) {
+            translateCalled = true;
+          }
 
-          var startX = startY = 0;
-          var moveX = moveY = 15;
+          triggerMouseEvent(rect.node, "mousedown");
+          triggerMouseEvent(document, "mousemove");
+          triggerMouseEvent(document, "mouseup");
 
-          rect.mousedown([{ clientX: startX, clientY: startY}]);
-          document.onmousemove({clientX: moveX, clientY: moveY});
-
-          expect(translateX).to(equal, moveX - startX);
-          expect(translateY).to(equal, moveY - startY);
+          expect(translateCalled).to(equal, true);
         });
       });
 
       describe('mouseup', function() {
         it("resets the current draggable", function() {
-          rect.mousedown([{}]);
-          document.onmouseup();
+          triggerMouseEvent(rect.node, "mousedown");
+          triggerMouseEvent(document, "mouseup");
+
           expect(paper.draggable.current()).to(equal, null);
         });
       })
@@ -163,8 +158,9 @@ Screw.Unit(function() {
             called = true;
           });
 
-          rect.mousedown([{}]);
-          document.onmousemove({});
+          triggerMouseEvent(rect.node, "mousedown");
+          triggerMouseEvent(document, "mousemove");
+          triggerMouseEvent(document, "mouseup");
 
           expect(called).to(equal, true);
         });
@@ -265,8 +261,9 @@ Screw.Unit(function() {
         var rect = paper.rect(0,0,10,10);
         set.push(rect);
 
-        rect.mousedown([{ clientX: startX, clientY: startY}]);
-        document.onmousemove({clientX: moveX, clientY: moveY});
+        triggerMouseEvent(rect.node, "mousedown", startX, startY);
+        triggerMouseEvent(document, "mousemove", moveX, moveY);
+        triggerMouseEvent(document, "mouseup");
 
         expect(translateX).to(equal, moveX - startX);
         expect(translateY).to(equal, moveY - startY);
@@ -288,8 +285,9 @@ Screw.Unit(function() {
           var rect = paper.rect(0,0,10,10);
           set.push(rect);
 
-          rect.mousedown([{}]);
-          document.onmousemove({});
+          triggerMouseEvent(rect.node, "mousedown");
+          triggerMouseEvent(document, "mousemove");
+          triggerMouseEvent(document, "mouseup");
 
           expect(called).to(equal, true);
         });
