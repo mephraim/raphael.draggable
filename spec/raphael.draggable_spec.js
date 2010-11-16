@@ -327,6 +327,27 @@ Screw.Unit(function() {
 
           expect(called).to(equal, true);
         });
+
+        it ("passes mouse event data to the drag handler function", function () {
+          var data;
+          set.draggable.drag(function(eventData) {
+            data = eventData;
+          });
+
+          var startX = 0;
+          var startY = 0;
+
+          var endX = 25;
+          var endY = 30;
+
+          var rect = paper.rect(startX, startY, 10, 10);
+          set.push(rect);
+
+          clickAndMoveElement(rect.node, startX, startY, endX, endY);
+
+          expect(data.deltaX).to(equal, endX - startX);
+          expect(data.deltaY).to(equal, endY - startY);
+        });
       });
     });
   });

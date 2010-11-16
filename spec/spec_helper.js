@@ -4,8 +4,8 @@ function triggerMouseEvent(element, type, clientX,  clientY) {
   element.dispatchEvent(event);
 }
 
-function clickAndMoveElement(element) {
-  triggerMouseEvent(element, "mousedown");
-  triggerMouseEvent(document, "mousemove");
-  triggerMouseEvent(document, "mouseup");
+function clickAndMoveElement(element, startX, startY, endX, endY) {
+  triggerMouseEvent(element, "mousedown", startX, startY);
+  triggerMouseEvent(document, "mousemove", endX, endY);
+  triggerMouseEvent(document, "mouseup", endX, endY);
 }
